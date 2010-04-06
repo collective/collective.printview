@@ -12,7 +12,7 @@
       name="default"
       title="PrintView addon"
       directory="profiles/default"
-      description="Extension profile for collective.printview"
+      description="PrintView is Plone addon for displaying all the documents under folder structure"
       provides="Products.GenericSetup.interfaces.EXTENSION"
       i18n:attributes="title description"
   />

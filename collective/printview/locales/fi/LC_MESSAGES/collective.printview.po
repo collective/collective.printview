@@ -24,3 +24,5 @@ msgstr ""
 msgid "printview view of folders content"
 msgstr "printview näkymä kansion sivujen sisällöstä"
 
+msgid "printview_crawling_forbidden"
+msgstr "Sisällön näyttäminen on estetty."
