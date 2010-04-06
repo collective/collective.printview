@@ -1,0 +1,13 @@
+# use glob syntax.
+syntax: glob
+
+*.pyc
+*~
+*.mo
+.egg-info
+.project
+.pydevproject
+.settings
+
+syntax: regexp
+^collective\.addthis\.egg-info$
