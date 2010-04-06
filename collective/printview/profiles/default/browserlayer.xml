@@ -1,0 +1,4 @@
+<layers>
+    <layer name="collective.printview"
+           interface="collective.printview.interfaces.IprintviewBrowserLayer" />
+</layers>

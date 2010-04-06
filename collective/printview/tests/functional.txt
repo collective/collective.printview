@@ -1,0 +1,17 @@
+====================
+A functional doctest
+====================
+
+First, we must perform some setup. We use the testbrowser that is shipped
+with Five, as this provides proper Zope 2 integration. Most of the 
+documentation, though, is in the underlying zope.testbrower package.
+
+    >>> from Products.Five.testbrowser import Browser
+    >>> browser = Browser()
+    >>> portal_url = self.portal.absolute_url()
+
+Test if our front page has printview view available.
+
+    >>> browser.open(portal_url)
+
+

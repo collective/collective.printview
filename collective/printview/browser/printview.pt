@@ -1,0 +1,22 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+    i18n:domain="collective.printview">
+    <head>
+        <title i18n:translate="">printview view of folders content</title>
+    </head>
+    <body>
+        <tal:block tal:define="results view/getAllPages">
+            <div tal:repeat="page results">
+                <h1 class="documentTitle" tal:content="page/title">
+                    Title or id
+                </h1>
+                <div class="documentDescription"
+                    tal:content="page/description">
+                </div>
+
+                <div id="bodyContent">
+                    <div tal:replace="structure page/data"/>
+                </div>
+            </div>
+        </tal:block>
+    </body>
+</html>
