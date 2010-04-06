@@ -4,10 +4,7 @@ syntax: glob
 *.pyc
 *~
 *.mo
-.egg-info
+*.egg-info
 .project
 .pydevproject
 .settings
-
-syntax: regexp
-^collective\.addthis\.egg-info$
