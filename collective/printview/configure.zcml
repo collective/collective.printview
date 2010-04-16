@@ -1,12 +1,23 @@
 <configure 
-   xmlns="http://namespaces.zope.org/zope"
-   xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
-   xmlns:i18n="http://namespaces.zope.org/i18n"
-   i18n_domain="collective.printview">
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+  xmlns:browser="http://namespaces.zope.org/browser"
+  xmlns:i18n="http://namespaces.zope.org/i18n"
+  i18n_domain="collective.printview">
   
   <i18n:registerTranslations directory="locales" />
   
   <include package=".browser" />
+
+  <browser:page
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      name="printview-controlpanel"
+      class=".printviewsettings.PrintViewControlPanel"
+      permission="cmf.ManagePortal"
+      layer=".interfaces.IPrintViewBrowserLayer"
+  />
+
+  <adapter factory=".printviewsettings.PrintViewControlPanelAdapter" />
   
   <genericsetup:registerProfile
       name="default"

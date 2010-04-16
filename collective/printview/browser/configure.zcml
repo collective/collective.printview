@@ -9,4 +9,10 @@
      permission="cmf.ModifyPortalContent"
      />
 
+  <!-- 
+  <browser:resource
+    name="printview.png"
+    file="printview.png"
+    />-->
+    
 </configure>

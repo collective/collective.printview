@@ -3,9 +3,26 @@
 from collective.printview.interfaces import IPrintView
 from Products.Five.browser import BrowserView
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
-from plone.memoize.instance import memoize
+from Products.CMFCore.utils import getToolByName
+from plone.memoize import ram
 from zope.interface import implements
-from collective.printview import _
+
+
+def _modified_cachekey(method, self):
+    """ Returns DateTime of the latest modification """
+
+    catalog = getToolByName(self, 'portal_catalog')
+    latest = catalog(portal_types=('Document','Folder'), 
+                     path={'query':'/'.join(self.context.getPhysicalPath())},
+                     review_state=self.review_state_options,
+                     sort_on='modified',
+                     sort_order='ascending')
+    
+    if latest:
+        return latest[-1].modified
+    else:
+        pass
+
 
 class PrintView(BrowserView):
     """ Support class for printview view """
@@ -17,9 +34,13 @@ class PrintView(BrowserView):
     def __init__(self, context, request):
         self.context = context
         self.request = request
-        self.pages_data = []        
+        self.pprop   = getToolByName(self.context, 'portal_properties')
+        
+        self.review_state_options = self.pprop.printview_properties.allowedStates
+        self.pages_data = []  
 
-
+    
+    @ram.cache(_modified_cachekey)
     def getAllPages(self):
         """
         Checks if we're allowed to crawl through folder contents from
@@ -47,15 +68,14 @@ class PrintView(BrowserView):
 
         return self.pages_data
 
+
     def getPages(self, obj):
         """
         Crawls through folders and documents and adds all public or visible
         documents to a list for printing.
         """
         
-        review_state_options = ('visible', 'published',)
-
-        for i in obj.getFolderContents(contentFilter = {'portal_type' : 'Document', 'review_state' : review_state_options}, full_objects=True):
+        for i in obj.getFolderContents(contentFilter = {'portal_type' : 'Document', 'review_state' : self.review_state_options}, full_objects=True):
             self.pages_data.append({
                 "title" :       i.Title(),
                 "description" : i.Description(),
@@ -63,7 +83,7 @@ class PrintView(BrowserView):
             })
 
         #Get all folders in context
-        for j in obj.getFolderContents(contentFilter = {'portal_type' : 'Folder', 'review_state' : review_state_options }, full_objects=True):
+        for j in obj.getFolderContents(contentFilter = {'portal_type' : 'Folder', 'review_state' : self.review_state_options }, full_objects=True):
             print_contents = getattr(j, 'print_contents', False)
             if print_contents:
                 self.getPages(j)
