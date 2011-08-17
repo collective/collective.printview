@@ -19,10 +19,10 @@ from collective.printview import _
 
 
 class PrintViewControlPanelAdapter(SchemaAdapterBase):
-    
+
     adapts(IPloneSiteRoot)
     implements(IPrintViewControlPanelForm)
-    
+
     def __init__(self, context):
         super(PrintViewControlPanelAdapter, self).__init__(context)
         self.portal = getSite()
@@ -30,6 +30,7 @@ class PrintViewControlPanelAdapter(SchemaAdapterBase):
         self.context = pprop.printview_properties
 
     allowedStates = ProxyFieldProperty(IPrintViewControlPanelForm['allowedStates'])
+    folderishTypes = ProxyFieldProperty(IPrintViewControlPanelForm['folderishTypes'])
 
     def getAllowedStates(self):
         return getattr(self.context, 'allowedStates',
@@ -39,12 +40,20 @@ class PrintViewControlPanelAdapter(SchemaAdapterBase):
         if safe_hasattr(self.context, 'allowedStates'):
             self.context.allowedStates = value
 
-    ProxyFieldProperty(IPrintViewControlPanelForm['allowedStates'])
+    def getFolderishTypes(self):
+        return getattr(self.context, 'folderishTypes',
+                       getattr(self.context, 'folderishTypes', None))
 
+    def setFolderishTypes(self, value):
+        if safe_hasattr(self.context, 'folderishTypes'):
+            self.context.folderishTypes = value
+
+    ProxyFieldProperty(IPrintViewControlPanelForm['allowedStates'])
+    ProxyFieldProperty(IPrintViewControlPanelForm['folderishTypes'])
 
 class PrintViewControlPanel(ControlPanelForm):
     """ Pathkey control panel """
-    
+
     implements(IPrintViewControlPanel)
 
     form_fields = FormFields(IPrintViewControlPanelForm)
