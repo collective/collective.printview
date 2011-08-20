@@ -1,31 +1,33 @@
-<configure 
+<configure
   xmlns="http://namespaces.zope.org/zope"
   xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
   xmlns:browser="http://namespaces.zope.org/browser"
+  xmlns:grok="http://namespaces.zope.org/grok"
   xmlns:i18n="http://namespaces.zope.org/i18n"
   i18n_domain="collective.printview">
-  
+
   <i18n:registerTranslations directory="locales" />
-  
-  <include package=".browser" />
 
+  <grok:grok package="." />
+
+  <!-- Control panel -->
   <browser:page
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-      name="printview-controlpanel"
-      class=".printviewsettings.PrintViewControlPanel"
-      permission="cmf.ManagePortal"
-      layer=".interfaces.IPrintViewBrowserLayer"
-  />
+    name="printview-settings"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    class=".controlpanel.PrintviewControlPanel"
+    permission="cmf.ManagePortal"
+    layer=".interfaces.IPrintviewBrowserLayer"
+    />
 
-  <adapter factory=".printviewsettings.PrintViewControlPanelAdapter" />
-  
   <genericsetup:registerProfile
-      name="default"
-      title="PrintView addon"
-      directory="profiles/default"
-      description="PrintView is Plone addon for displaying all the documents under folder structure"
-      provides="Products.GenericSetup.interfaces.EXTENSION"
-      i18n:attributes="title description"
-  />
-    
+    name="default"
+    title="Printview addon"
+    directory="profiles/default"
+    description="Printview is a Plone addon which crawls through folder structure
+    collecting basic information (title, description, text) and finally prints
+    everything on one page."
+    provides="Products.GenericSetup.interfaces.EXTENSION"
+    i18n:attributes="title description"
+    />
+
 </configure>

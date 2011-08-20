@@ -17,7 +17,7 @@ setup(name='collective.printview',
       keywords='',
       author='Jukka Ojaniemi',
       author_email='jukka.ojaniemi@jyu.fi',
-      url='http://bitbucket.org/pingviini/collective.printview',
+      url='https://github.com/collective/collective.printview',
       license='GPL',
       packages=find_packages(exclude=['ez_setup']),
       namespace_packages=['collective'],
@@ -25,8 +25,12 @@ setup(name='collective.printview',
       zip_safe=False,
       install_requires=[
           'setuptools',
+          'plone.app.registry',
           # -*- Extra requirements: -*-
       ],
+      extras_require={
+        'test': 'plone.app.testing',
+      },
       entry_points="""
       # -*- Entry points: -*-
       [z3c.autoinclude.plugin]

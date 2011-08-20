@@ -26,3 +26,6 @@ msgstr "printview näkymä kansion sivujen sisällöstä"
 
 msgid "printview_crawling_forbidden"
 msgstr "Sisällön näyttäminen on estetty."
+
+msgid "Links"
+msgstr "Linkit"

@@ -1,0 +1,33 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+  i18n:domain="collective.printview">
+  <head>
+    <title i18n:translate="">Printview view of folders content</title>
+    <script type="text/javascript" src="http://localhost:8080/Plone/portal_javascripts/Sunburst%20Theme/jquery.js"></script>
+    <link rel="stylesheet" type="text/css"
+      tal:define="navroot context/@@plone_portal_state/navigation_root_url"
+      tal:attributes="href string:${navroot}/++resource++collective.printview/print.css"
+      />
+    <script type="text/javascript"
+      tal:define="navroot context/@@plone_portal_state/navigation_root_url"
+      tal:attributes="src string:${navroot}/++resource++collective.printview/footnotelinks.js"></script>
+  </head>
+  <body>
+    <tal:block tal:define="results view/getAllPages">
+      <div tal:repeat="page results">
+        <h1 class="documentTitle" tal:content="page/title">
+          Title or id
+        </h1>
+        <div class="description"
+          tal:content="page/description">
+        </div>
+        <div class="content">
+          <div tal:replace="structure page/data"/>
+        </div>
+      </div>
+    </tal:block>
+    <div id="links">
+      <h1 i18n:translate="">Links</h1>
+      <ol id="printlinks"></ol>
+    </div>
+  </body>
+</html>

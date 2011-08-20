@@ -1,74 +1,56 @@
 # -*- coding: utf-8 -*-
 
-from collective.printview.interfaces import IPrintView
-from Products.Five.browser import BrowserView
-from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+from Acquisition import aq_inner
+from zope.component import getUtility
+from five import grok
+from plone.registry.interfaces import IRegistry
+from collective.printview.interfaces import IPrintviewSettings
 from Products.CMFCore.utils import getToolByName
 from plone.memoize import ram
-from zope.interface import implements
+from Products.CMFCore.interfaces import IFolderish
 
 
 def _modified_cachekey(method, self):
     """ Returns DateTime of the latest modification """
-
     catalog = getToolByName(self, 'portal_catalog')
-    latest = catalog(portal_types=('Document','Folder'),
+    portal_types = self.settings.folderish_types + \
+                   self.settings.types
+    latest = catalog(portal_types=portal_types,
                      path={'query':'/'.join(self.context.getPhysicalPath())},
-                     review_state=self.review_state_options,
+                     review_state=self.settings.allowed_states,
                      sort_on='modified',
                      sort_order='ascending')
 
     if latest:
-        return latest[-1].modified
+        hash_string = self.settings.allowed_states.__str__() + \
+            self.settings.folderish_types.__str__() + \
+            self.settings.types.__str__() + \
+            latest[-1].modified.ISO()
+        return hash(hash_string)
     else:
         pass
 
 
-class PrintView(BrowserView):
+class Printview(grok.View):
     """ Support class for printview view """
 
-    implements(IPrintView)
+    grok.name('printview')
+    grok.context(IFolderish)
+    grok.require('cmf.ManagePortal')
 
-    __call__ = ViewPageTemplateFile('printview.pt')
-
-    def __init__(self, context, request):
-        self.context = context
-        self.request = request
-        self.pprop   = getToolByName(self.context, 'portal_properties')
-
-        self.review_state_options = self.pprop.printview_properties.allowedStates
-        self.folderish_types = self.pprop.printview_properties.folderishTypes
+    def update(self):
+        registry = getUtility(IRegistry)
+        self.settings = registry.forInterface(IPrintviewSettings)
         self.pages_data = []
-
 
     @ram.cache(_modified_cachekey)
     def getAllPages(self):
-        """
-        Checks if we're allowed to crawl through folder contents from
-        folders print_contents property. If boolean is true, we'll call
-        getPages method to start crawling - if property is false, we'll
-        add error message to our list and return it.
-        """
+        """Call getPages method to start crawling."""
 
-        self.print_contents = getattr(self.context, 'print_contents', False)
-
-        if self.print_contents:
-            self.getPages(self.context)
-        else:
-            import zope.i18n
-            translated_message = zope.i18n.translate(
-                msgid   = "printview_crawling_forbidden",
-                domain  = "collective.printview",
-                default = "Retrieving folder contents is forbidden.",
-                target_language = self.context.REQUEST.get("LANGUAGE", "en"))
-
-            self.pages_data.append({
-                "title" :       translated_message,
-                "description" : "",
-                "data" :        ""})
+        context = aq_inner(self.context)
+        self.getPages(context)
 
         return self.pages_data
-
 
     def getPages(self, obj):
         """
@@ -76,15 +58,30 @@ class PrintView(BrowserView):
         documents to a list for printing.
         """
 
-        for i in obj.getFolderContents(contentFilter = {'portal_type' : 'Document', 'review_state' : self.review_state_options}, full_objects=True):
-            self.pages_data.append({
-                "title" :       i.Title(),
-                "description" : i.Description(),
-                "data" :        i.getText()
-            })
+        for content in obj.getFolderContents(contentFilter = {
+            'portal_type': self.settings.types,
+            'review_state': self.settings.allowed_states},
+            full_objects=True):
 
-        #Get all folders in context
-        for j in obj.getFolderContents(contentFilter = {'portal_type' : self.folderish_types, 'review_state' : self.review_state_options }, full_objects=True):
-            print_contents = getattr(j, 'print_contents', False)
-            if print_contents:
-                self.getPages(j)
+            try:
+                self.pages_data.append({
+                    "title": content.Title(),
+                    "description": content.Description(),
+                    "data": content.getText()
+                    })
+            except AttributeError:
+                # Maybe we have dexterity content type with RichText data
+                # TODO: fix stupid repeat
+                self.pages_data.append({
+                    "title": content.Title(),
+                    "description": content.Description(),
+                    "data": content.text.raw
+                    })
+
+        # Get all folderish types in context
+        for container in obj.getFolderContents(contentFilter={
+            'portal_type': self.settings.folderish_types,
+            'review_state': self.settings.allowed_states},
+            full_objects=True):
+
+            self.getPages(container)

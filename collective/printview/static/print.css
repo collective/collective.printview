@@ -1,0 +1,22 @@
+h1 {
+    font-size: 14pt;
+}
+
+.description {
+    font-size: 13pt;
+}
+
+body {
+    font-size: 12pt;
+}
+
+a:link, a:visited {
+    color: #520;
+    background: transparent;
+    font-weight: bold;
+    text-decoration: underline;
+    }
+
+#links {
+    display: none;
+}

@@ -6,41 +6,15 @@ from zope import schema
 from collective.printview import _
 
 
-class IPrintViewBrowserLayer(IDefaultPloneLayer):
+class IPrintviewBrowserLayer(IDefaultPloneLayer):
     """Marker interface that defines a Zope 3 skin layer bound to a skin
     selection in portal_skins.
     """
 
-class IPrintView(Interface):
-    """
-    Browser view for displaying every documents body from all the folders
-    under the path this view is called from.
-    """
 
-    def getAllPages():
-        """
-        Checks if we're allowed to crawl through folder contents from
-        folders print_contents property. If boolean is true, we'll call
-        getPages method to start crawling - if property is false, we'll
-        add error message to our list and return it.
-        """
-        pass
+class IPrintviewSettings(Interface):
 
-    def getPages():
-        """
-        Crawls through folders and documents and adds all public or visible
-        documents to a list for printing.
-        """
-        pass
-
-
-class IPrintViewControlPanel(Interface):
-    """AddThis Controlpanel"""
-
-
-class IPrintViewControlPanelForm(Interface):
-
-    allowedStates = schema.List(
+    allowed_states = schema.List(
         title=_(u"Queried workflow states"),
         required=False,
         default=['published',],
@@ -48,7 +22,20 @@ class IPrintViewControlPanelForm(Interface):
             vocabulary='plone.app.vocabularies.WorkflowStates',)
         )
 
-    folderishTypes = schema.List(
+    folderish_types = schema.List(
         title=_(u"Folderish content types"),
+        description=_(u"Specify all the folderish content types you wan't\
+                      to crawl through."),
         required=False,
-        value_type=schema.TextLine(),)
+        default=['Folder'],
+        value_type=schema.Choice(
+            vocabulary='collective.printview.ReallyUserFriendlyFolderishTypes')
+        )
+
+    types = schema.List(
+        title=_(u"Content types to pick for single view"),
+        required=False,
+        default=['Document'],
+        value_type=schema.Choice(
+            vocabulary='plone.app.vocabularies.ReallyUserFriendlyTypes')
+        )

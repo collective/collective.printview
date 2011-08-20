@@ -1,37 +1,39 @@
-import unittest
-
-from zope.testing import doctestunit
-from zope.component import testing
-from Testing import ZopeTestCase as ztc
-
-from Products.Five import zcml
-from Products.Five import fiveconfigure
-from Products.PloneTestCase import PloneTestCase as ptc
-from Products.PloneTestCase.layer import PloneSite
-from Products.PloneTestCase.layer import onsetup
-
-@onsetup
-def setup_product():
-    """Set up the package and its dependencies.
-    
-    The @onsetup decorator causes the execution of this body to be deferred
-    until the setup of the Plone site testing layer. We could have created our
-    own layer, but this is the easiest way for Plone integration tests.
-    """
-    
-    fiveconfigure.debug_mode = True
-    import collective.printview
-    zcml.load_config('configure.zcml', collective.printview)
-    fiveconfigure.debug_mode = False
-        
-    ztc.installPackage('collective.printview')
-    
-
-setup_product()
-ptc.setupPloneSite(products=['collective.printview'])
+from plone.app.testing import PloneSandboxLayer
+from plone.app.testing import PLONE_FIXTURE
+from plone.app.testing import IntegrationTesting
+from plone.app.testing import applyProfile
 
 
-class printviewFunctionalTestCase(ptc.FunctionalTestCase):
-    """We use this class for functional integration tests that use doctest
-    syntax. Again, we can put basic common utility or setup code in here.
-    """
+class MyProduct(PloneSandboxLayer):
+
+    defaultBases = (PLONE_FIXTURE,)
+
+    def setUpZope(self, app, configurationContext):
+        # Load ZCML
+        import five.grok
+        self.loadZCML(name='configure.zcml', package=five.grok)
+        import collective.printview
+        self.loadZCML(name='configure.zcml', package=collective.printview)
+        self.loadZCML(package=collective.printview)
+
+        # Install product and call its initialize() function
+        # z2.installProduct(app, '${namespace_package}.${package}')
+        # Note: you can skip this if my.product is not a Zope 2-style
+        # product, i.e. it is not in the Products.* namespace and it
+        # does not have a <five:registerPackage /> directive in its
+        # configure.zcml.
+
+    def setUpPloneSite(self, portal):
+        # Install into Plone site using portal_setup
+        applyProfile(portal, 'collective.printview:default')
+
+    def tearDownZope(self, app):
+        # Uninstall product
+        # z2.uninstallProduct(app, '${namespace_package}.${package}')
+        # Note: Again, you can skip this if my.product is not a Zope 2-
+        # style product
+        pass
+
+
+MYPRODUCT_FIXTURE = MyProduct()
+MYPRODUCT_INTEGRATION_TESTING = IntegrationTesting(bases=(MYPRODUCT_FIXTURE,), name="MyProduct:Integration")
