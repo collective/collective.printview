@@ -6,6 +6,8 @@
   xmlns:i18n="http://namespaces.zope.org/i18n"
   i18n_domain="collective.printview">
 
+  <includeDependencies package="." />
+
   <i18n:registerTranslations directory="locales" />
 
   <grok:grok package="." />

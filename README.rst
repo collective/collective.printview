@@ -2,7 +2,7 @@ Introduction
 ============
 
 Every now and then users ask if they could somehow get a view which displays 
-all the documents from certain folder structure at one page *Collective.printview* 
+all the documents from certain folder structure at one page. *Collective.printview* 
 is an answer to this request.
 
 *Collective.printview* brings you @@printview view that you can call from every
