@@ -27,6 +27,14 @@ The resulting page contains some javascript magic which creates footnotes after
 each links and moves the actual links to page footer.
 
 
+Usage
+=====
+
+@@printview view can be used from folderish contents actions menu (where you
+can find cut,copy,paste,rename and delete actions as well). You can also manually
+type @@printview after the url.
+
+
 Warning!
 ========
 
