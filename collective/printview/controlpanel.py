@@ -9,7 +9,10 @@ class PrintviewSettingsEditForm(controlpanel.RegistryEditForm):
 
     schema = IPrintviewSettings
     label = _(u"Printview settings")
-    description = _(u"")
+    description = _(u"Here you can configure which workflow states and content\
+                      types are included in printview view. Please note, that\
+                      if you're using printview with a site with lots of content \
+                      objects it may slow the site for other users.")
 
     def updateFields(self):
         super(PrintviewSettingsEditForm, self).updateFields()

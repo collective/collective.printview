@@ -5,18 +5,19 @@ version = '1.0'
 
 setup(name='collective.printview',
       version=version,
-      description="",
-      long_description=open("README.txt").read() + "\n" +
+      description="Displays all specified Plone content in one printable page.",
+      long_description=open("README.rst").read() + "\n" +
                        open(os.path.join("docs", "HISTORY.txt")).read(),
       # Get more strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
         "Framework :: Plone",
-        "Programming Language :: Python",
+        "Programming Language :: Python :: 2.6",
+        "Programming Language :: Python :: 2.7",
         "Topic :: Software Development :: Libraries :: Python Modules",
         ],
-      keywords='',
+      keywords='collective.printview printview print',
       author='Jukka Ojaniemi',
-      author_email='jukka.ojaniemi@jyu.fi',
+      author_email='jukka.ojaniemi@gmail.com',
       url='https://github.com/collective/collective.printview',
       license='GPL',
       packages=find_packages(exclude=['ez_setup']),

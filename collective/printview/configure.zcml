@@ -16,7 +16,6 @@
     for="Products.CMFPlone.interfaces.IPloneSiteRoot"
     class=".controlpanel.PrintviewControlPanel"
     permission="cmf.ManagePortal"
-    layer=".interfaces.IPrintviewBrowserLayer"
     />
 
   <genericsetup:registerProfile
@@ -24,8 +23,8 @@
     title="Printview addon"
     directory="profiles/default"
     description="Printview is a Plone addon which crawls through folder structure
-    collecting basic information (title, description, text) and finally prints
-    everything on one page."
+                 collecting basic information (title, description, text) and finally prints
+                 everything on one page."
     provides="Products.GenericSetup.interfaces.EXTENSION"
     i18n:attributes="title description"
     />

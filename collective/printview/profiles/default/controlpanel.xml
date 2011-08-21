@@ -5,12 +5,13 @@
         purge="False">
 
   <configlet
-    title="Configure Printview" action_id="printview"
+    title="Printview settings" action_id="printview"
     appId="collective.printview" category="Products"
     condition_expr=""
     url_expr="string:${portal_url}/@@printview-settings"
     visible="True"
-    icon_expr="string:$portal_url/++resource++printview.png">
+    icon_expr="string:${portal_url}/++resource++collective.printview/printer-6.png"
+    i18n:attributes="title">
       <permission>Manage portal</permission>
   </configlet>
 </object>

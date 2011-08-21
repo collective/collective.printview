@@ -62,7 +62,6 @@ class Printview(grok.View):
             'portal_type': self.settings.types,
             'review_state': self.settings.allowed_states},
             full_objects=True):
-
             try:
                 self.pages_data.append({
                     "title": content.Title(),

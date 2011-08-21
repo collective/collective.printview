@@ -16,6 +16,9 @@ class IPrintviewSettings(Interface):
 
     allowed_states = schema.List(
         title=_(u"Queried workflow states"),
+        description=_(u"Select the workflow states which will be used for \
+                      searching both folders to crawl through and content types \
+                      to get the actual data for view."),
         required=False,
         default=['published',],
         value_type=schema.Choice(
@@ -33,7 +36,9 @@ class IPrintviewSettings(Interface):
         )
 
     types = schema.List(
-        title=_(u"Content types to pick for single view"),
+        title=_(u"Content types"),
+        description=_(u"Select the content types which you want to use to gather \
+                      the data for the printable view."),
         required=False,
         default=['Document'],
         value_type=schema.Choice(
