@@ -1,0 +1,17 @@
+syntax: glob
+
+bin
+parts
+develop-eggs
+var
+
+dist
+
+*.egg-info
+*.pyc
+*.mo
+*~
+
+.DS_Store
+.installed.cfg
+.mr.developer.cfg

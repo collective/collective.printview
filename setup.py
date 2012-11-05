@@ -29,6 +29,8 @@ setup(name='collective.printview',
           'plone.app.registry',
           'five.grok',
           # -*- Extra requirements: -*-
+          'plone.subrequest',
+          'xhtml2pdf',
       ],
       extras_require={
         'test': 'plone.app.testing',
