@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """Download 'printview' as PDF"""
 
+import re
+import urlparse
+
 from StringIO import StringIO
 from DateTime import DateTime
 from urllib import unquote
@@ -51,8 +54,8 @@ class PrintviewPDF(grok.View):
                     ctype = ctype.split(';')[0]
 
                     # Pisa only likes ascii css
-                    data = response.getBody().decode(encoding).encode(
-                        'ascii', errors='ignore')
+                    data = response.getBody()\
+                        .decode(encoding).encode('ascii', 'ignore')
                 except ValueError:
                     ctype = response.getHeader('content-type').split(';')[0]
                     data = response.getBody()
@@ -69,7 +72,16 @@ class PrintviewPDF(grok.View):
 
         printview = self.context.restrictedTraverse("printview")
 
-        html = StringIO(printview().encode('utf-8'))
+        html = printview().encode('utf-8', 'ignore')
+        # Hide "Links"-section added by printview:
+        html = html.replace('<div id="links">', '<div style="display: none;">')
+        # Transform all links to absolute, to make them links in PDF:
+        base_url = self.context.absolute_url()
+        for url in re.findall(r'href="([^"]*)"', html):
+            html = html.replace('href="%s"' % url,
+                                'href="%s"' % urlparse.urljoin(base_url, url))
+        html = StringIO(html)
+
         pisaDocument(html, pdf, raise_exception=True,
                      link_callback=fetch_resources, encoding='utf-8')
         assert pdf.len != 0, 'Pisa PDF generation returned empty PDF!'
@@ -79,12 +91,12 @@ class PrintviewPDF(grok.View):
         pdf.close()
 
         now = DateTime()
-        nice_filename = '%s_%s' % (self.context.getId(),
+        nice_filename = '%s_%s' % (self.context.getId().capitalize(),
                                    now.strftime('%Y%m%d'))
 
         self.request.response.setHeader('Content-Disposition',
                                         'attachment; filename=%s.pdf' %
-                                         nice_filename)
+                                        nice_filename)
         self.request.response.setHeader('Content-Type', 'application/pdf')
         self.request.response.setHeader('Content-Length', len(pdfcontent))
         self.request.response.setHeader('Last-Modified',
