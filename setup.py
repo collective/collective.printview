@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '1.0.1'
+version = '1.1.0rc2'
 
 setup(name='collective.printview',
       version=version,
@@ -29,6 +29,8 @@ setup(name='collective.printview',
           'plone.app.registry',
           'five.grok',
           # -*- Extra requirements: -*-
+          'plone.subrequest',
+          'xhtml2pdf',
       ],
       extras_require={
         'test': 'plone.app.testing',
